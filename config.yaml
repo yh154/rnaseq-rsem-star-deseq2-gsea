@@ -31,7 +31,7 @@ gsea:
   # gsea presume human genes, so use with caution
   exe_jar: "resource/gsea2-2.2.4.jar"
   gmt: "resource/c2.cp.v7.0.symbols.gmt"
-  no_perm: 100
+  no_perm: 1000
   no_plot: 20
   set_max: 500
   set_min: 15
