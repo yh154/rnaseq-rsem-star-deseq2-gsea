@@ -1,0 +1,38 @@
+# "samples.tsv" tab-delimited, must contains columns: 'sample','condition','R1', 'R2'
+# in case of single-end, leave 'R2' empty.
+
+samples: "samples.tsv"
+
+params:
+    threads: 8
+
+fastqc:
+    fastq_dir: "fastq/"
+    out_dir: "fastqc/"
+
+align:
+    reference: "genome/genomename"
+    gtf: "genes.gtf"
+    star_path: "/usr/local/bin//bin"
+    # only required for single end library
+    fragment_len_sd: 60.0
+    fragment_len_mean: 500.0
+    # required if genome index 'reference' is empty
+    genome_fasta: "genome.fa"
+    # read_length - 1
+    star_sjdboverhang: 75
+
+diffexp:
+    adjusted_pvalue: 0.05
+    # whether or not to output rnk files intend to be used for gsea analysis.
+    rnk: "true"
+
+gsea:
+  # gsea presume human genes, so use with caution
+  exe_jar: "resource/gsea2-2.2.4.jar"
+  gmt: "resource/c2.cp.v7.0.symbols.gmt"
+  no_perm: 100
+  no_plot: 20
+  set_max: 500
+  set_min: 15
+  seed: 521
