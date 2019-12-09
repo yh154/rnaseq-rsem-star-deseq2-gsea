@@ -1,6 +1,8 @@
 # rnaseq-rsem-star-deseq2-gsea
 
-Workflow for bulk RNASeq. Support mixed single-/paired-end libraries. Performing RSEM/STAR mapping, differential expression using DESeq2. GSEA gene set enrichment analysis based on log2FC from DESeq for each comparison using gene symbols. Collections of gene sets could be downloaded from MSigDB (http://software.broadinstitute.org/gsea/msigdb/index.jsp). Suggested Genome/GTFs from GENECODE (https://www.gencodegenes.org/).
+Workflow for bulk RNASeq. Support mixed single-/paired-end libraries. Performing RSEM/STAR mapping, differential expression using DESeq2. GSEA gene set enrichment analysis based on log2FC from DESeq for each comparison using gene symbols. 
+
+Collections of gene sets could be downloaded from MSigDB (http://software.broadinstitute.org/gsea/msigdb/index.jsp). Suggested Genome/GTFs from GENECODE (https://www.gencodegenes.org/).
 
 ### Input:
     "sample2.tsv" - tab-delimited table contains sample ids and condtions. 
