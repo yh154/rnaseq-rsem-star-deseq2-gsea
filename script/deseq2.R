@@ -96,6 +96,10 @@ fun_write_rnk <- function(rnk, file_id="output"){
 # colData and countData must have the same sample order
 cnt<- read.table(snakemake@input[["counts"]], sep="\t", header=TRUE, row.names=1, check.names=FALSE)
 coldata <- read.table(snakemake@params[["coldata"]], sep="\t", header=TRUE, row.names=1, check.names=FALSE)
+if(nrow(coldata)==0 | ncol(coldata)<4){
+    coldata <- read.csv(snakemake@params[["coldata"]], header=TRUE, row.names=1, check.names=FALSE)
+}
+
 colnames(cnt) = gsub("_expected_count$","",colnames(cnt))
 
 print(head(cnt))
