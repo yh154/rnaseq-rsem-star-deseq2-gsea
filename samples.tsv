@@ -1,0 +1,7 @@
+sample	condition	R1	R2
+A_rep_1	A	A_rep_1_R1.fastq.gz	A_rep_1_R2.fastq.gz
+A_rep_2	A	A_rep_2_R1.fastq.gz	A_rep_2_R2.fastq.gz
+B_rep_1	B	B_rep_1.fastq.gz	
+B_rep_2	B	B_rep_2.fastq.gz	
+C_rep_1	C	C_rep_1.fastq.gz	
+C_rep_2	C	C_rep_2.fastq.gz	
