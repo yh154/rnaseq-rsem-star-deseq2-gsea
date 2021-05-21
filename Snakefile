@@ -25,7 +25,7 @@ def get_fq(wildcards):
 
 def get_CONTRAST(conditions):
     cond=np.unique(conditions)
-    cond.sort()
+    cond=sorted(cond, key=str.casefold)
     b = list()
     for i in combinations(cond,2):
         b.append(i[0]+"_vs_"+i[1])
