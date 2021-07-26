@@ -21,6 +21,7 @@ fun_pca <- function(dds, title=""){
     guides(fill=FALSE) +
     xlab(paste0("PC1: ",percentVar[1],"% variance")) +
     ylab(paste0("PC2: ",percentVar[2],"% variance")) +
+    geom_text(aes(label=name), vjust= -0.5, hjust= -0.1) + 
     ggtitle(title) + theme_bw() + coord_fixed() +
     theme(plot.title = element_text(size = 12, face = "bold",hjust=0.5)
           ,panel.grid.minor = element_blank()
