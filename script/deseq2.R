@@ -99,9 +99,9 @@ fun_write_rnk <- function(rnk, file_id="output"){
 # colData and countData must have the same sample order
 cnt<- read.table(snakemake@input[["counts"]], sep="\t", header=TRUE, row.names=1, check.names=FALSE)
 coldata <- read.table(snakemake@params[["coldata"]], sep="\t", header=TRUE, row.names=1, check.names=FALSE)
-if(nrow(coldata)==0 | ncol(coldata)<4){
-    coldata <- read.csv(snakemake@params[["coldata"]], header=TRUE, row.names=1, check.names=FALSE)
-}
+#if(nrow(coldata)==0 | ncol(coldata)<4){
+#    coldata <- read.csv(snakemake@params[["coldata"]], header=TRUE, row.names=1, check.names=FALSE)
+#}
 
 colnames(cnt) = gsub("_expected_count$","",colnames(cnt))
 
@@ -114,7 +114,8 @@ if(!all(rownames(coldata)==colnames(cnt))){
 }
 
 # remove low expressed genes
-cnt <- cnt[rowSums(sign(cnt))>1,]
+#cnt <- cnt[rowSums(sign(cnt))>1,]
+cnt <- cnt[rowMeans(cnt)>1,]
 # make sure counts in integer
 rns <- rownames(cnt)
 cnt <- apply(cnt,2,as.integer)
@@ -134,7 +135,7 @@ res <- lapply(contrasts, function(x){
 names(res) <- lapply(contrasts, paste, collapse="_vs_")
 
 # plotting, before any table merging.
-pdf("diffexp/diffexp.pdf", height=8, width=11)
+pdf("diffexp/diffexp.pdf", height=8.5, width=11)
 fun_pca(dds)
 mapply(DESeq2::plotMA, res, main=names(res))
 mapply(fun_plot_padj_cnt, res, names(res))
@@ -144,7 +145,6 @@ dev.off()
 # add deseq2 normalized counts
 res <- mapply(fun_add_ncnt, res, names(res), MoreArgs = list(dds=dds), SIMPLIFY = FALSE)
 # check if gene identify is ensembl, add symbol to result
-mapply(fun_write_result_csv, res, file_id=names(res))
 
 # add symbol if rowname is ensembl id.
 if(all(grepl("^ENS", rns))){
@@ -153,6 +153,8 @@ if(all(grepl("^ENS", rns))){
  }else{
      res <- lapply(res,function(x){colnames(x)[1]="gene_name";x})
  }
+
+mapply(fun_write_result_csv, res, file_id=names(res))
 
 if(toupper(rnk)){
   rnk <- lapply(res, function(x){
