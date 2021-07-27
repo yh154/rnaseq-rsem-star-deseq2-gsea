@@ -26,6 +26,8 @@ diffexp:
     adjusted_pvalue: 0.05
     # whether or not to output rnk files intend to be used for gsea analysis.
     rnk: "true"
+    # genome: "human", "mouse"
+    genome: "human" 
 
 gsea:
   # gsea presume human genes, so use with caution
