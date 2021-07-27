@@ -3,6 +3,7 @@ sink(log)
 sink(log, type="message")
 
 rnk <- snakemake@params[["rnk"]]
+genome <- snakemake@params[["genome"]]
 adjusted_pvalue <- snakemake@params[["adjusted_pvalue"]]
 gtf <- snakemake@params[["gtf"]]
 
@@ -162,7 +163,9 @@ if(toupper(rnk)){
     x <- x[!is.na(x[["log2FoldChange"]]),]
     x <- x[with(x, order(-abs(x["log2FoldChange"]))), ]
     x <- x[!duplicated(x[["gene_name"]]), ]
-    x[["gene_name"]] <- toupper(x[["gene_name"]])
+    if(toupper(genome)=="HUMAN"{
+      x[["gene_name"]] <- toupper(x[["gene_name"]])
+      }
     x
   })
   mapply(fun_write_rnk, rnk, names(rnk))
