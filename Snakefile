@@ -176,6 +176,7 @@ rule deseq2:
         coldata=config['samples'],
         adjusted_pvalue=config['diffexp']['adjusted_pvalue'],
         rnk=config['diffexp']['rnk'],
+        genome=config['diffexp']['genome'],
         gtf=config['align']['gtf']
     log:
         "diffexp/diffexp.log"
