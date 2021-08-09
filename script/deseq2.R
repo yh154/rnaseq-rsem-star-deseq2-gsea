@@ -127,13 +127,9 @@ dds <- DESeq2::DESeqDataSetFromMatrix(countData=cnt, colData=coldata, design=~ c
 # normalization and preprocessing
 dds <- DESeq2::DESeq(dds)
 saveRDS(dds, file=snakemake@output[[1]])
-if(is.null(contrasts)){
-    contrasts <- levels(SummarizedExperiment::colData(dds)[["condition"]])
-    contrasts <- combn(contrasts, 2, simplify=FALSE)
-}else{
-    contrasts <- as.list(contrasts)
-    contrasts <- lapply(contrasts, function(x){as.character(unlist(strsplit(x,"_vs_")))}
-}
+contrasts <- as.list(contrasts)
+contrasts <- lapply(contrasts, function(x){as.character(unlist(strsplit(x,"_vs_")))}
+
 res <- lapply(contrasts, function(x){
   DESeq2::results(dds, contrast = c("condition",x[1],x[2]), alpha = adjusted_pvalue, independentFiltering =T)
 })
