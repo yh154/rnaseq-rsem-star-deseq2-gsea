@@ -177,7 +177,8 @@ rule deseq2:
         adjusted_pvalue=config['diffexp']['adjusted_pvalue'],
         rnk=config['diffexp']['rnk'],
         genome=config['diffexp']['genome'],
-        gtf=config['align']['gtf']
+        gtf=config['align']['gtf'],
+        contrast=CONTRASTS
     log:
         "diffexp/diffexp.log"
     script:
