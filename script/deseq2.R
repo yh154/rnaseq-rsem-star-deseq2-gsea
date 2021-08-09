@@ -3,7 +3,6 @@ sink(log)
 sink(log, type="message")
 
 rnk <- snakemake@params[["rnk"]]
-genome <- snakemake@params[["genome"]]
 adjusted_pvalue <- snakemake@params[["adjusted_pvalue"]]
 gtf <- snakemake@params[["gtf"]]
 
@@ -98,6 +97,7 @@ fun_write_rnk <- function(rnk, file_id="output"){
 }
 
 # colData and countData must have the same sample order
+contrasts = NULL
 cnt<- read.table(snakemake@input[["counts"]], sep="\t", header=TRUE, row.names=1, check.names=FALSE)
 coldata <- read.table(snakemake@params[["coldata"]], sep="\t", header=TRUE, row.names=1, check.names=FALSE)
 #if(nrow(coldata)==0 | ncol(coldata)<4){
@@ -127,9 +127,13 @@ dds <- DESeq2::DESeqDataSetFromMatrix(countData=cnt, colData=coldata, design=~ c
 # normalization and preprocessing
 dds <- DESeq2::DESeq(dds)
 saveRDS(dds, file=snakemake@output[[1]])
-
-contrasts <- levels(SummarizedExperiment::colData(dds)[["condition"]])
-contrasts <- combn(contrasts, 2, simplify=FALSE)
+if(is.null(contrasts)){
+    contrasts <- levels(SummarizedExperiment::colData(dds)[["condition"]])
+    contrasts <- combn(contrasts, 2, simplify=FALSE)
+}else{
+    contrasts <- as.list(contrasts)
+    contrasts <- lapply(contrasts, function(x){as.character(unlist(strsplit(x,"_vs_")))}
+}
 res <- lapply(contrasts, function(x){
   DESeq2::results(dds, contrast = c("condition",x[1],x[2]), alpha = adjusted_pvalue, independentFiltering =T)
 })
@@ -163,9 +167,7 @@ if(toupper(rnk)){
     x <- x[!is.na(x[["log2FoldChange"]]),]
     x <- x[with(x, order(-abs(x["log2FoldChange"]))), ]
     x <- x[!duplicated(x[["gene_name"]]), ]
-    if(toupper(genome)=="HUMAN"{
-      x[["gene_name"]] <- toupper(x[["gene_name"]])
-      }
+    x[["gene_name"]] <- toupper(x[["gene_name"]])
     x
   })
   mapply(fun_write_rnk, rnk, names(rnk))
