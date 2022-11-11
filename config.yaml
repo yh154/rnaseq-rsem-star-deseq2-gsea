@@ -11,14 +11,14 @@ fastqc:
     out_dir: "fastqc/"
 
 align:
-    reference: "/gpfs/data/abl/home/haoy04/scripts/resource/For_RNASeq/genome_50/genome"
-    gtf: "/gpfs/data/abl/home/haoy04/scripts/resource/For_RNASeq/genome_50/gencode.vM25.primary_assembly.annotation.gtf"
-    star_path: "/gpfs/share/apps/star/2.7.3a/bin/"
+    reference: "genome"
+    gtf: "gencode.vM25.primary_assembly.annotation.gtf"
+    star_path: "/star/2.7.3a/bin/"
     # only required for single end library
     fragment_len_sd: 80
     fragment_len_mean: 210
     # required if genome index 'reference' is empty
-    genome_fasta: "/gpfs/data/abl/home/haoy04/scripts/resource/For_RNASeq/genome_50/GRCm38.primary_assembly.genome.fa"
+    genome_fasta: "GRCm38.primary_assembly.genome.fa"
     # read_length - 1
     star_sjdboverhang: 50
 
