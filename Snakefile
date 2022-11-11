@@ -25,6 +25,7 @@ def get_fq(wildcards):
 
 def get_CONTRAST(conditions):
     cond=np.unique(conditions)
+    #cond.sort()
     cond=sorted(cond, key=str.casefold)
     b = list()
     for i in combinations(cond,2):
@@ -46,18 +47,25 @@ else:
 
 IDS = SAMPLES['sample']
 READS = [os.path.basename(x).split(".")[0] for x in SAMPLES['R1'].dropna().tolist() + SAMPLES['R2'].dropna().tolist()]
-CONTRASTS=get_CONTRAST(SAMPLES['condition'])
+#CONTRASTS=get_CONTRAST(SAMPLES['condition'])
+CONTRASTS = ["shDot1_1_vs_shGFP_Dot1","shDot1_2_vs_shGFP_Dot1","shMen1_1_vs_shGFP_Men1",
+             "shMen1_2_vs_shGFP_Men1","shMen1_3_vs_shGFP_Men1"]
 
 rule all:
     input:
-        expand("gsea/gsea_{contrast}.log", contrast=CONTRASTS)
+        #expand("fastqc/{id}.html", id=IDS)
+        #"genome/genomeLog.out"
+        #expand("mapping/{id}.STAR.genome.bam", id=IDS)
+        #expand("expression/{type}.txt", type=["expected_count","TPM","FPKM"])
+        expand("diffexp/gsea_{contrast}.rnk", contrast=CONTRASTS)
+        #expand("gsea/gsea_{contrast}.log", contrast=CONTRASTS)
 
 rule fastqc:
     input:
         get_fq
     threads: threads_max
     output:
-        html=temp("fastqc/{id}.html"),
+        html="fastqc/{id}.html",
         zip=temp("fastqc/{id}.zip")
     params:
         prefix=config['fastqc']['out_dir']
@@ -176,7 +184,6 @@ rule deseq2:
         coldata=config['samples'],
         adjusted_pvalue=config['diffexp']['adjusted_pvalue'],
         rnk=config['diffexp']['rnk'],
-        genome=config['diffexp']['genome'],
         gtf=config['align']['gtf'],
         contrast=CONTRASTS
     log:
