@@ -21,7 +21,7 @@ fun_pca <- function(dds, title=""){
     guides(fill=FALSE) +
     xlab(paste0("PC1: ",percentVar[1],"% variance")) +
     ylab(paste0("PC2: ",percentVar[2],"% variance")) +
-    geom_text(aes(label=name), vjust= -0.5, hjust= -0.1) + 
+    geom_text(aes(label=name), vjust= -0.5, hjust= -0.1,show.legend = FALSE) + 
     geom_vline(xintercept = 0, linetype="dashed",color="gray50") + 
     geom_hline(yintercept = 0, linetype="dashed",color="gray50") +
     ggtitle(title) + theme_bw() + coord_fixed() +
@@ -97,7 +97,10 @@ fun_write_rnk <- function(rnk, file_id="output"){
 }
 
 # colData and countData must have the same sample order
-contrasts = NULL
+#contrasts = c("endo_HOM_IL22_vs_endo_HOM_MOPC", "endo_HOM_IL22_vs_endo_Ctrl_IL22", "endo_HOM_MOPC_vs_endo_Ctrl_MOPC","endo_Ctrl_IL22_vs_endo_Ctrl_MOPC","epi_HOM_IL22_vs_epi_HOM_MOPC","epi_HOM_IL22_vs_epi_Ctrl_IL22","epi_HOM_MOPC_vs_epi_Ctrl_MOPC","epi_Ctrl_IL22_vs_epi_Ctrl_MOPC")
+
+contrasts = snakemake@params[["contrast"]]
+
 cnt<- read.table(snakemake@input[["counts"]], sep="\t", header=TRUE, row.names=1, check.names=FALSE)
 coldata <- read.table(snakemake@params[["coldata"]], sep="\t", header=TRUE, row.names=1, check.names=FALSE)
 #if(nrow(coldata)==0 | ncol(coldata)<4){
@@ -127,9 +130,13 @@ dds <- DESeq2::DESeqDataSetFromMatrix(countData=cnt, colData=coldata, design=~ c
 # normalization and preprocessing
 dds <- DESeq2::DESeq(dds)
 saveRDS(dds, file=snakemake@output[[1]])
-contrasts <- as.list(contrasts)
-contrasts <- lapply(contrasts, function(x){as.character(unlist(strsplit(x,"_vs_")))}
-
+#if(is.null(contrasts)){
+#    contrasts <- levels(SummarizedExperiment::colData(dds)[["condition"]])
+#    contrasts <- combn(contrasts, 2, simplify=FALSE)
+#}else{
+ contrasts <- as.list(contrasts)
+ contrasts=lapply(contrasts,function(x){as.character(unlist(strsplit(x,"_vs_")))})
+#}
 res <- lapply(contrasts, function(x){
   DESeq2::results(dds, contrast = c("condition",x[1],x[2]), alpha = adjusted_pvalue, independentFiltering =T)
 })
@@ -163,7 +170,7 @@ if(toupper(rnk)){
     x <- x[!is.na(x[["log2FoldChange"]]),]
     x <- x[with(x, order(-abs(x["log2FoldChange"]))), ]
     x <- x[!duplicated(x[["gene_name"]]), ]
-    x[["gene_name"]] <- toupper(x[["gene_name"]])
+    #x[["gene_name"]] <- toupper(x[["gene_name"]])
     x
   })
   mapply(fun_write_rnk, rnk, names(rnk))
