@@ -48,8 +48,7 @@ else:
 IDS = SAMPLES['sample']
 READS = [os.path.basename(x).split(".")[0] for x in SAMPLES['R1'].dropna().tolist() + SAMPLES['R2'].dropna().tolist()]
 #CONTRASTS=get_CONTRAST(SAMPLES['condition'])
-CONTRASTS = ["shDot1_1_vs_shGFP_Dot1","shDot1_2_vs_shGFP_Dot1","shMen1_1_vs_shGFP_Men1",
-             "shMen1_2_vs_shGFP_Men1","shMen1_3_vs_shGFP_Men1"]
+CONTRASTS = ["A_vs_Control","B_vs_Control"]
 
 rule all:
     input:
