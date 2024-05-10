@@ -173,7 +173,7 @@ if(toupper(rnk)){
       mutate(rk=log2FoldChange*logp*(-1)) %>% arrange(padj) %>% 
       select(`gene_name`,rk)
   })
-  rnk=rank[!duplicated(rnk$gene_name),]
+  rnk=rnk[!duplicated(rnk$gene_name),]
   mapply(fun_write_rnk, rnk, names(rnk))
 }
 
