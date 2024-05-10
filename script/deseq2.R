@@ -166,14 +166,14 @@ mapply(fun_write_result_csv, res, file_id=names(res))
 
 if(toupper(rnk)){
   require(dplyr)
-  rnk <- lapply(res, function(x){
+  rnk = lapply(res, function(x){
     x %>% select(`gene_name`, log2FoldChange, padj) %>% 
       mutate(logp=ifelse(is.na(padj), 0, 
                    ifelse(padj==0, log10(min(padj[!is.na(padj)&padj>0])),log10(padj)))) %>%
-      mutate(rk=log2FoldChange*logp*(-1)) %>% 
-      select(`gene_name`,rk) %>% arrange(desc(rk))
+      mutate(rk=log2FoldChange*logp*(-1)) %>% arrange(padj) %>% 
+      select(`gene_name`,rk)
   })
-  
+  rnk=rank[!duplicated(rnk$gene_name),]
   mapply(fun_write_rnk, rnk, names(rnk))
 }
 
